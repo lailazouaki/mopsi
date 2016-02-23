@@ -1,11 +1,13 @@
 import numpy as np
 import cv2
+import time
 
 
 MIN_MATCH_COUNT = 10
 
-
 def matchFeatures(dir1, dir2, dir3):
+    start_time = time.time()
+
     img1 = cv2.imread(dir1, 0)          # queryImage
     img2 = cv2.imread(dir2, 0)          # trainImage
 
@@ -56,3 +58,4 @@ def matchFeatures(dir1, dir2, dir3):
 
     img3 = cv2.drawMatches(img1,kp1,img2,kp2,good,None,**draw_params)
     cv2.imwrite(dir3, img3)
+    print("--- %s seconds --- " %(time.time()-start_time))
