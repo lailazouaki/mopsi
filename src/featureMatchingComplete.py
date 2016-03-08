@@ -11,6 +11,14 @@ images = [WHOLE_PATH_IMAGES+sys.argv[1]+"/"+f for f in listdir(WHOLE_PATH_IMAGES
 for image in images:
 	print(image)
 
+# SIFT - Flann Matcher
 for count, image in enumerate(images):
-    featureMatching.matchFeatures(images[0], image, "../match/"+sys.argv[1]+"/match_image_"+str(count)+".jpg")
+    featureMatching.matchFeaturesSIFT(images[0], image, "/match_image_"+str(count)+".jpg")
 
+# # SURF - Flann Matcher
+# for count, image in enumerate(images):
+#     featureMatching.matchFeaturesSURF(images[0], image, "../match/surf/"+sys.argv[1]+"/match_image_"+str(count)+".jpg")
+
+# # SIFT - BF Matcher 
+# for count, image in enumerate(images):
+#     featureMatching.BFMatchFeaturesSIFT(images[0], image, "../match/sift/bf"+sys.argv[1]+"/match_image_"+str(count)+".jpg")
