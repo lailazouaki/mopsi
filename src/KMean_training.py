@@ -68,33 +68,47 @@ def find_centers(X, K):
         mu = reevaluate_centers(oldmu, clusters)
     return(mu, clusters)
 
+#------for each image in the training set, we compute how many descriptors there are and return a dictionnary. 
+
+def num_desc(trainingset):
+    dic = {}
+    for element in trainingset:
+        found = false
+        for img in dic.keys():
+            if(element[2]==img):
+                dic[img]= dic[img]+1
+                found =true
+        if(found==false):
+            dic[img] = 1
+    return dic     
+
 
 
 #----------for a given cluster, finds all images in it an weights them------------------
-def set_mass(X):
+def set_mass(X, dic):
     masses = []
     for desc in X:
         found = false
         for i in range(0, len(masses)):
             if(masses[i][1]==desc[2]):
-                masses[i][0]=masses[i][0] + 1
+                masses[i][0]=masses[i][0] + 1/dic{masses[i][1]}
                 found = true
         if(found == false):
-            masses.append([1, desc[2]])
+            masses.append([1/dic{desc[2], desc[2]])
     return masses
 
 
 #----------- creates the KDTree, including vectors and masses
-def recursive_Tree (X, K, depth):
+def recursive_Tree (X, K, depth, dic):
     if(depth =< L):
         (mu, clusters) = find_centers(X, K)
         depth = depth-1
         for X in clusters:
-            Tree[i]=[mu[i], recursive_Tree(X, K, depth)]
+            Tree[i]=[mu[i], recursive_Tree(X, K, depth, dic)]
     return Tree
     else:
         for i in range(0, len(mu)):
-            masses=set_mass(X)
+            masses=set_mass(X, dic)
             Tree[i]=[mu[i], masses]
         return Tree
 #En procedant ainsi, on garde en memoire dans Tree: la hierarchie de l'arbre, les vecteurs aux nodes et les ensembles. 
@@ -113,7 +127,8 @@ for i in os.listdir(direction):
     (kps,descs) = surf.detectAndCompute(gray, None)
     for j in range(0,len(descs)):
         trainingset.append((kps[j],descs[j],direction+i))
+dictionnary = num_desc(descriptor)
 # trainingset is a very large set of lists containing the keypoint, the descriptor and the associated image.
 
-KMTree = recursive_Tree(trainingset, K, 0)
+KMTree = recursive_Tree(trainingset, K, 0, dictionnary)
 
