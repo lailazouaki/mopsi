@@ -2,6 +2,11 @@ import cv2
 import os
 import numpy as np
 
+#in the following code, K is the branch factor of the vocabulaty tree.
+#                       mu is the list of centers for a given cluster of points (divided in K region, hence K centers)
+#                       X generaly refers to a cluster. A cluster isn't solely made of points, it is made of short list containing. [keypoint,descriptor(which is a vector), img id]
+# we call X cluster thanks to the descriptors vector inside it. The centers are computed based on these points(vectors). 
+#                       L is the max depth of the voc-Tree.
 
 def random_centers(K, dim):
     res = []
