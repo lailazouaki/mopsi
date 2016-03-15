@@ -7,6 +7,7 @@ def loadImages(dir1, dir2):
     img2 = cv2.imread(dir2, 0)          # trainImage
     return img1, img2
 
-def SIFTDescription(img1, img2):
-    kp1, des1 = sift.detectAndCompute(img1,None)
-    kp2, des2 = sift.detectAndCompute(img2,None)
+def extractKeypointsDescriptors(img, detector):
+    kp, des = detector.detectAndCompute(img,None)
+    print("# SIFT kp1: {}, descriptors1: {}".format(len(kp), des.shape))
+
