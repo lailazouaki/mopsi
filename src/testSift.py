@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-img = cv2.imread("/Users/lailazouaki/Documents/MOPSI/test_image.jpg")
+img = cv2.imread("/Users/Thomartin/mopsi/images/tour_eiffel/tour_eiffel_3.jpg")
 gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
 sift = cv2.xfeatures2d.SIFT_create()

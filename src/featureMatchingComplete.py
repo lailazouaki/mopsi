@@ -5,7 +5,7 @@ import featureMatching
 
 print("---- Feature Matching ----")
 
-WHOLE_PATH_IMAGES = "/Users/lailazouaki/Documents/MOPSI/images/"
+WHOLE_PATH_IMAGES = "/Users/Thomartin/mopsi/images/tour_eiffel/"
 images = [WHOLE_PATH_IMAGES+sys.argv[1]+"/"+f for f in listdir(WHOLE_PATH_IMAGES+sys.argv[1]) if (not f.startswith('.') and isfile(join(WHOLE_PATH_IMAGES+sys.argv[1], f)))]
 
 for image in images:
