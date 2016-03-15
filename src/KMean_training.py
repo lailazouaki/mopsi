@@ -4,7 +4,7 @@ import numpy as np
 
 #in the following code, K is the branch factor of the vocabulaty tree.
 #                       mu is the list of centers for a given cluster of points (divided in K region, hence K centers)
-#                       X generaly refers to a cluster. A cluster isn't solely made of points, it is made of short list containing. [keypoint,descriptor(which is a vector), img id]
+#                       X generally refers to a cluster. A cluster isn't solely made of points, it is made of short list containing. [keypoint,descriptor(which is a vector), img id]
 # we call X cluster thanks to the descriptors vector inside it. The centers are computed based on these points(vectors). 
 #                       L is the max depth of the voc-Tree.
 
@@ -13,7 +13,7 @@ def random_centers(K, dim):
     for k in range(0,K):
         vec=[]
         for i in range(0,dim):
-            vec.append(random.uniform(-1, 1))
+            vec.append(np.random.uniform(-1, 1))
         res.append(vec)
     return(res)
     
@@ -32,7 +32,7 @@ def reevaluate_centers(mu, clusters):
     newmu = []
     # keys = sorted(clusters.keys())
     # for k in keys:
-    for cluster in clusters
+    for cluster in clusters:
         newmu.append(vec_mean(cluster))
     return newmu
 
@@ -58,6 +58,7 @@ def has_converged(mu, oldmu):
  #--------- we divide a given area in K parts------------------------------
 def find_centers(X, K):
     # Initialize to K random centers
+    dim = 64
     oldmu = random_centers(K, dim)
     mu = random_centers(K, dim)
     while not has_converged(mu, oldmu):
@@ -73,13 +74,13 @@ def find_centers(X, K):
 def num_desc(trainingset):
     dic = {}
     for element in trainingset:
-        found = false
+        found = False
         for img in dic.keys():
+            if(found==False):
+                dic[img] = 1
             if(element[2]==img):
                 dic[img]= dic[img]+1
-                found =true
-        if(found==false):
-            dic[img] = 1
+                found =True     
     return dic     
 
 
@@ -88,47 +89,49 @@ def num_desc(trainingset):
 def set_mass(X, dic):
     masses = []
     for desc in X:
-        found = false
+        found = False
+        print(len(masses))
         for i in range(0, len(masses)):
+            print(masses[i][1])
             if(masses[i][1]==desc[2]):
-                masses[i][0]=masses[i][0] + 1/dic{masses[i][1]}
-                found = true
-        if(found == false):
-            masses.append([1/dic{desc[2], desc[2]])
+                masses[i][0]=masses[i][0] + 1/dic[masses[i][1]]
+                found = False
+        if(found == False):
+            masses.append([1/dic[desc[2]]])
     return masses
 
 
 #----------- creates the KDTree, including vectors and masses
-def recursive_Tree (X, K, depth, dic):
-    if(depth =< L):
+def recursive_Tree (X, K, depth, dic, L=5):
+    if depth <= L:
         (mu, clusters) = find_centers(X, K)
         depth = depth-1
         for X in clusters:
             Tree[i]=[mu[i], recursive_Tree(X, K, depth, dic)]
-    return Tree
+        return Tree
     else:
         for i in range(0, len(mu)):
             masses=set_mass(X, dic)
             Tree[i]=[mu[i], masses]
         return Tree
 #En procedant ainsi, on garde en memoire dans Tree: la hierarchie de l'arbre, les vecteurs aux nodes et les ensembles. 
-# Puisque l'arbre est complet on sait exactement là ou tout se trouve.
+# Puisque l'arbre est complet on sait exactement la ou tout se trouve.
 
 
 #------------ reading of training data-----------------
 #all pictures have to be in the same folder. 
 
-direction = "/Users/Thomartin/mopsi/images/tour_eiffel/"
+direction = "/Users/lailazouaki/Documents/MOPSI/images/tour_eiffel/"
 surf = cv2.xfeatures2d.SURF_create()
 trainingset = []
 for i in os.listdir(direction):
-    img = cv2.imread(direction+i)
-    gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    print(i)
+    gray = cv2.imread(direction+str(i), 0)
     (kps,descs) = surf.detectAndCompute(gray, None)
     for j in range(0,len(descs)):
         trainingset.append((kps[j],descs[j],direction+i))
-dictionnary = num_desc(descriptor)
+dictionnary = num_desc(trainingset)
 # trainingset is a very large set of lists containing the keypoint, the descriptor and the associated image.
 
-KMTree = recursive_Tree(trainingset, K, 0, dictionnary)
+KMTree = recursive_Tree(trainingset, 2, 0, dictionnary)
 
