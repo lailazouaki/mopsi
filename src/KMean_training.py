@@ -158,7 +158,7 @@ dictionnary = num_desc(trainingset)
 
 KMTree = recursive_Tree(trainingset, 2, 0, dictionnary)
 with open(PATH+"trained_tree.txt", 'w') as trained_tree:
-    trained_tree.write("Process terminated : done in--- %s seconds --- " %(time.time()-start_time))
+    trained_tree.write("Process terminated : done in--- %s seconds --- " %(time.time()-start_time) + "\n")
     trained_tree.write(str(KMTree))
 
 print("Process terminated : done in--- %s seconds --- " %(time.time()-start_time))
