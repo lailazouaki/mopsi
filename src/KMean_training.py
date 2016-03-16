@@ -9,13 +9,11 @@ import numpy as np
 #                       L is the max depth of the voc-Tree.
 
 # for an int K and an int dim, we create K random vectors of dimension dim. 
-def random_centers(K, dim):
+def random_centers(X, K, dim):
+    random_pos = np.random.randint(0, len(X), size = K)
     res = []
     for k in range(0,K):
-        vec=[]
-        for i in range(0,dim):
-            vec.append(np.random.uniform(-1, 1))
-        res.append(vec)
+        res.append(X[random_pos[k]][1])
     return(res)
     
 #for a set of elements X     and centers mu (cf previous and new function, create clusters based on nearest center. 
@@ -55,8 +53,8 @@ def vec_mean(cluster, dim = 64):
         for i in range(0, dim):
             sum[i] = sum[i]/len(cluster)
     except IndexError:
-        # si jamais il n'y a pas de d'elements dans le cluster consideré, le vecteur moyen est mis à 0. 
-        # je ne suis absolument pas convaincu, mais n'ai pas trouvé d'autre solution. 
+        # si jamais il n'y a pas de d'elements dans le cluster considere, le vecteur moyen est mis a 0. 
+        # je ne suis absolument pas convaincu, mais n'ai pas trouve d'autre solution. 
         # car il faut absolument remplir les K branches partant de la node, on ne peut pas se permettre d'avoir une branche vide. 
         # Je pense que c'est d'ici qu evient l'erreur d'entrainement. 
         for i in range(0, dim):
@@ -66,15 +64,15 @@ def vec_mean(cluster, dim = 64):
 #----------we check the last iteration didn't improve centers location-------------
 def has_converged(mu, oldmu):
     return (set([tuple(a) for a in mu]) == set([tuple(a) for a in oldmu]))
- #en gros, la technique d'iteration utilisée pour trouver les centres est asymptotiques.
+ #en gros, la technique d'iteration utilisee pour trouver les centres est asymptotiques.
  # cette condition de convergence va faire office de condition d'arret. 
 
  #--------- we divide a given area in K parts------------------------------
 def find_centers(X, K):
     # Initialize to K random centers
     dim = 64
-    oldmu = random_centers(K, dim)
-    mu = random_centers(K, dim)
+    oldmu = random_centers(X, K, dim)
+    mu = random_centers(X, K, dim)
     while not has_converged(mu, oldmu):
         oldmu = mu
         # Assign all points in X to clusters
@@ -118,10 +116,10 @@ def set_mass(X, dic):
 
 
 #----------- creates the KDTree, including vectors and masses
-def recursive_Tree (X, K, depth, dic, L=5):
+def recursive_Tree (X, K, depth, dic, L=2):
     Tree = []
     (mu, clusters) = find_centers(X, K)
-    if (depth <= L-1):
+    if (depth <= L-2):
         depth = depth+1
         for i in range(0,len(mu)):
             Tree.append([mu[i], recursive_Tree(clusters[i], K, depth, dic)])
@@ -161,4 +159,5 @@ dictionnary = num_desc(trainingset)
 KMTree = recursive_Tree(trainingset, 2, 0, dictionnary)
 
 print(KMTree)
+
 
