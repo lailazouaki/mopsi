@@ -4,6 +4,7 @@ import numpy as np
 import time
 import cPickle as pickle
 
+
 PATH = "/Users/lailazouaki/Documents/MOPSI/"
 
 #in the following code, K is the branch factor of the vocabulaty tree.
@@ -152,20 +153,21 @@ for file in os.listdir(direction):
     img = cv2.imread(direction+"/"+file)
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     (kps,descs) = surf.detectAndCompute(gray, None)
+    print(len(descs))
     for j in range(0,len(descs)):
         trainingset.append((kps[j],descs[j],direction+"/"+file))
 
-dictionnary = num_desc(trainingset)
+# dictionnary = num_desc(trainingset)
+
 
 # trainingset is a very large set of lists containing the keypoint, the descriptor and the associated image.
 
+# KMTree = recursive_Tree(trainingset, 2, 0, dictionnary)
 
-KMTree = recursive_Tree(trainingset, 2, 0, dictionnary)
+# with open('trained_tree.pkl', 'wb') as output:
+#     pickle.dump(KMTree, output, -1)
 
-with open('trained_tree.pkl', 'wb') as output:
-    pickle.dump(KMTree, output, -1)
-
-del KMTree
+# del KMTree
 
 print("Process terminated : done in--- %s seconds --- " %(time.time()-start_time))
 
