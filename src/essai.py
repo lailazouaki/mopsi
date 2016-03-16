@@ -64,6 +64,8 @@ def find_centers(X, K):
         mu = reevaluate_centers(oldmu, clusters)
     return(mu, clusters)
 
+
+
 trainingset=[]
 direction = "/Users/Thomartin/mopsi/images/tour_eiffel"
 surf = cv2.xfeatures2d.SURF_create()

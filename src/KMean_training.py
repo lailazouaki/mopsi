@@ -55,6 +55,10 @@ def vec_mean(cluster, dim = 64):
         for i in range(0, dim):
             sum[i] = sum[i]/len(cluster)
     except IndexError:
+        # si jamais il n'y a pas de d'elements dans le cluster consideré, le vecteur moyen est mis à 0. 
+        # je ne suis absolument pas convaincu, mais n'ai pas trouvé d'autre solution. 
+        # car il faut absolument remplir les K branches partant de la node, on ne peut pas se permettre d'avoir une branche vide. 
+        # Je pense que c'est d'ici qu evient l'erreur d'entrainement. 
         for i in range(0, dim):
             sum.append(0)
     return(sum)
@@ -62,7 +66,9 @@ def vec_mean(cluster, dim = 64):
 #----------we check the last iteration didn't improve centers location-------------
 def has_converged(mu, oldmu):
     return (set([tuple(a) for a in mu]) == set([tuple(a) for a in oldmu]))
- 
+ #en gros, la technique d'iteration utilisée pour trouver les centres est asymptotiques.
+ # cette condition de convergence va faire office de condition d'arret. 
+
  #--------- we divide a given area in K parts------------------------------
 def find_centers(X, K):
     # Initialize to K random centers
@@ -76,6 +82,9 @@ def find_centers(X, K):
         # Reevaluate centers
         mu = reevaluate_centers(oldmu, clusters)
     return(mu, clusters)
+
+    #On boule tant qu'un regime statique n'a pas encore ete atteint. 
+    # A chaque fois il s'agit de recalculer la decoupe de X en clusters en utilisant de nouveaux points. 
 
 #------for each image in the training set, we compute how many descriptors there are and return a dictionnary. 
 
@@ -91,22 +100,9 @@ def num_desc(trainingset):
             dic[element[2]]=1
     return dic     
 
-
+ # Je parcours le trainingset en recencant toutes les photos ainsi qu'en omptant leur nombre de descripteurs.
 
 #----------for a given cluster, finds all images in it an weights them------------------
-# def set_mass(X, dic):
-#     masses = []
-#     for desc in X:
-#         found = False
-#         print(len(masses))
-#         for i in range(0, len(masses)):
-#             if(masses[i][1]==desc[2]):
-#                 masses[i][0]= masses[i][0] + (1/dic[masses[i][1]])
-#                 found = True
-#         if(found == False):
-#             masses.append([(1/dic[desc[2]]), desc[2]])
-#         print(masses)
-#     return masses
 
 def set_mass(X, dic):
     masses={}
@@ -116,6 +112,9 @@ def set_mass(X, dic):
         else:
             masses[desc[2]] = (float(1)/dic[desc[2]])
     return masses
+
+# une version assez propres qui ajoute de a valeur a un dico, ou bien cree l'entree. 
+# A noter aue le float(1) est la pour forcer une division relle(R), sinon j'obtients tjrs0.
 
 
 #----------- creates the KDTree, including vectors and masses
