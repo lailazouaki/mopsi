@@ -7,7 +7,6 @@ import featureMatching
 import cPickle as pickle
 
 
-
 def find_nearest_center(List_SubTree, descriptor):
     return min([(i, np.linalg.norm(descriptor-List_SubTree[i][0])) \
                     for i in enumerate(List_SubTree)], key=lambda t:t[1])[0]
