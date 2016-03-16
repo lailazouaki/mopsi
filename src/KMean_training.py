@@ -84,43 +84,53 @@ def num_desc(trainingset):
     for element in trainingset:
         found = False
         for img in dic.keys():
-            if(found==False):
-                dic[img] = 1
             if(element[2]==img):
-                dic[img]= dic[img]+1
-                found =True     
+                dic[element[2]]= dic[element[2]]+1
+                found =True
+        if(found == False):
+            dic[element[2]]=1
     return dic     
 
 
 
 #----------for a given cluster, finds all images in it an weights them------------------
+# def set_mass(X, dic):
+#     masses = []
+#     for desc in X:
+#         found = False
+#         print(len(masses))
+#         for i in range(0, len(masses)):
+#             if(masses[i][1]==desc[2]):
+#                 masses[i][0]= masses[i][0] + (1/dic[masses[i][1]])
+#                 found = True
+#         if(found == False):
+#             masses.append([(1/dic[desc[2]]), desc[2]])
+#         print(masses)
+#     return masses
+
 def set_mass(X, dic):
-    masses = []
+    masses={}
     for desc in X:
-        found = False
-        print(len(masses))
-        for i in range(0, len(masses)):
-            print(masses[i][1])
-            if(masses[i][1]==desc[2]):
-                masses[i][0]=masses[i][0] + 1/dic[masses[i][1]]
-                found = False
-        if(found == False):
-            masses.append([1/dic[desc[2]]])
+        if desc[2] in masses:
+            masses[desc[2]] = masses[desc[2]]+ (float(1)/dic[desc[2]])
+        else:
+            masses[desc[2]] = (float(1)/dic[desc[2]])
     return masses
 
 
 #----------- creates the KDTree, including vectors and masses
 def recursive_Tree (X, K, depth, dic, L=5):
-    if depth <= L:
-        (mu, clusters) = find_centers(X, K)
-        depth = depth-1
-        for X in clusters:
-            Tree[i]=[mu[i], recursive_Tree(X, K, depth, dic)]
+    Tree = []
+    (mu, clusters) = find_centers(X, K)
+    if (depth <= L-1):
+        depth = depth+1
+        for i in range(0,len(mu)):
+            Tree.append([mu[i], recursive_Tree(clusters[i], K, depth, dic)])
         return Tree
     else:
         for i in range(0, len(mu)):
-            masses=set_mass(X, dic)
-            Tree[i]=[mu[i], masses]
+            masses=set_mass(clusters[i], dic)
+            Tree.append([mu[i], masses])
         return Tree
 #En procedant ainsi, on garde en memoire dans Tree: la hierarchie de l'arbre, les vecteurs aux nodes et les ensembles. 
 # Puisque l'arbre est complet on sait exactement la ou tout se trouve.
@@ -140,7 +150,16 @@ for file in os.listdir(direction):
         trainingset.append((kps[j],descs[j],direction+"/"+file))
 
 dictionnary = num_desc(trainingset)
+
 # trainingset is a very large set of lists containing the keypoint, the descriptor and the associated image.
 
+
+
+#print((float(1)/dictionnary["/Users/Thomartin/mopsi/images/tour_eiffel/tour_eiffel_3.jpg"]))
+
+#print(set_mass(trainingset, dictionnary))
+
 KMTree = recursive_Tree(trainingset, 2, 0, dictionnary)
+
+print(KMTree)
 

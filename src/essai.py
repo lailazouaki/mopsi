@@ -79,6 +79,7 @@ print(type(trainingset[4][1].tolist()[1]))
 cen = random_centers(4, 64)
 clus = cluster_points(trainingset, cen)
 # print(reevaluate_centers(cen, clus ))
-print(cen)
+# print(cen)
 # print(clus.keys())
-print(find_centers(trainingset, 3)[0])
+set
+
