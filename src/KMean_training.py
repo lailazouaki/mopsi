@@ -1,6 +1,7 @@
 import cv2
 import os
 import numpy as np
+import time
 
 PATH = "/Users/lailazouaki/Documents/MOPSI/"
 
@@ -138,6 +139,8 @@ def recursive_Tree (X, K, depth, dic, L=2):
 #------------ reading of training data-----------------
 #all pictures have to be in the same folder. 
 
+start_time = time.time()
+
 direction = PATH+"images/image_all"
 surf = cv2.xfeatures2d.SURF_create()
 trainingset = []
@@ -153,13 +156,12 @@ dictionnary = num_desc(trainingset)
 # trainingset is a very large set of lists containing the keypoint, the descriptor and the associated image.
 
 
-
-#print((float(1)/dictionnary["/Users/Thomartin/mopsi/images/tour_eiffel/tour_eiffel_3.jpg"]))
-
-#print(set_mass(trainingset, dictionnary))
-
 KMTree = recursive_Tree(trainingset, 2, 0, dictionnary)
-with open(PATH+"results", )
-print(KMTree)
+with open(PATH+"trained_tree.txt", 'w') as trained_tree:
+    trained_tree.write("Process terminated : done in--- %s seconds --- " %(time.time()-start_time))
+    trained_tree.write(str(KMTree))
+
+print("Process terminated : done in--- %s seconds --- " %(time.time()-start_time))
+
 
 
