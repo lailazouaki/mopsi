@@ -7,17 +7,27 @@ import featureMatching
 import cPickle as pickle
 
 
-def find_nearest_center(List_SubTree, descriptor):
-    return min([(i, np.linalg.norm(descriptor-List_SubTree[i][0])) \
-                    for i, subtree in enumerate(List_SubTree)], key=lambda t:t[1])[0]
+PATH = "/Users/lailazouaki/Documents/MOPSI/images/"
+
+def openObject(filename):
+	with open(filename, 'rb') as obj:
+		openedObject = pickle.load(obj)
+
+	return openedObject
 
 
-def getDicScore(KMTree, descriptor, L=2):
-    Tree = KMTree
-    for i in range(0, L):
-        branchNumber = find_nearest_center(Tree, descriptor)
-        Tree = Tree[branchNumber][1]
-    return Tree 
+def find_nearest_center(list_subTree, descriptor):
+    return min([(i, np.linalg.norm(descriptor-list_subTree[i][0])) \
+                    for i, subtree in enumerate(list_subTree)], key=lambda t:t[1])[0]
+
+
+def getDicScore(trained_tree, descriptor, max_depth=2):
+    tree = trained_tree
+    for i in range(0, max_depth):
+        branchNumber = find_nearest_center(tree, descriptor)
+        tree = tree[branchNumber][1]
+
+    return tree 
 
 # Score de toutes les images pour un descripteur
 def incrementDic(relevance_database, dicScore):
@@ -25,47 +35,43 @@ def incrementDic(relevance_database, dicScore):
 		relevance_database[img_name] += dicScore[img_name]
 
 # Score de toutes les images pour tous les descripteurs = pour la query image
-def incrementTotal(relevance_database, KMTree, decs):
+def incrementTotal(relevance_database, trained_tree, decs):
 	for descriptor in descs:
-		dicScore = getDicScore(KMTree, descriptor)
+		dicScore = getDicScore(trained_tree, descriptor)
 		incrementDic(relevance_database, dicScore)
 
 
-with open('trained_tree.pkl', 'rb') as input_tree:
-	KMTree = pickle.load(input_tree)
+if __name__ == "__main__":
+		
+	trained_tree = openObject('trained_tree.pkl')
 
-# print(KMTree)
-# print(KMTree[0][1][1][1]['/Users/lailazouaki/Documents/MOPSI/images/image_all/tour_eiffel_2.jpg'])
+	surf = cv2.xfeatures2d.SURF_create()
+	gray = cv2.imread("/Users/lailazouaki/Documents/MOPSI/images/ndp_7.jpg", 0)
+	(kps,descs) = surf.detectAndCompute(gray, None)
+
+	# Initialisation du dictionnaire de pertinence des images de la base de donnees
+	relevance_database={}
+	for img in listdir("/Users/lailazouaki/Documents/MOPSI/images/image_all"):
+	    relevance_database["/Users/lailazouaki/Documents/MOPSI/images/image_all/"+img] = 0
 
 
-
-PATH = "/Users/lailazouaki/Documents/MOPSI/images/"
-# img_path =PATH+sys.argv[1]
-
-surf = cv2.xfeatures2d.SURF_create()
-gray = cv2.imread("/Users/lailazouaki/Documents/MOPSI/images/ndp_7.jpg", 0)
-(kps,descs) = surf.detectAndCompute(gray, None)
-
-relevance_database={}
-for img in listdir("/Users/lailazouaki/Documents/MOPSI/images/image_all"):
-    relevance_database["/Users/lailazouaki/Documents/MOPSI/images/image_all/"+img] = 0
-
-# dicScore = getDicScore(KMTree, descs[0])
-# print(len(dicScore.keys()))
-
-# incrementDic(relevance_database, dicScore)
-
-# for key in dicScore:
-# 	print(str(relevance_database[key]) + " -- " + str(dicScore[key])) 
-
-incrementTotal(relevance_database, KMTree, descs)
-print(relevance_database)
-print(max(relevance_database.values()))
-print(relevance_database["/Users/lailazouaki/Documents/MOPSI/images/image_all/ndp_7.jpg"])
+	# Calcul du score des images de la base de donnees pour la query image
+	incrementTotal(relevance_database, trained_tree, descs)
+	print(relevance_database)
+	print(max(relevance_database.values()))
+	print(relevance_database["/Users/lailazouaki/Documents/MOPSI/images/image_all/ndp_7.jpg"])
 
 
 
+# Trash but maybe useful later
 
+	# dicScore = getDicScore(trained_tree, descs[0])
+	# print(len(dicScore.keys()))
+
+	# incrementDic(relevance_database, dicScore)
+
+	# for key in dicScore:
+	# 	print(str(relevance_database[key]) + " -- " + str(dicScore[key])) 
 
 
 
