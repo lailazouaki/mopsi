@@ -2,6 +2,7 @@ import cv2
 import os
 import numpy as np
 import time
+import cPickle as pickle
 
 PATH = "/Users/lailazouaki/Documents/MOPSI/"
 
@@ -135,6 +136,9 @@ def recursive_Tree (X, K, depth, dic, L=2):
 #En procedant ainsi, on garde en memoire dans Tree: la hierarchie de l'arbre, les vecteurs aux nodes et les ensembles. 
 # Puisque l'arbre est complet on sait exactement la ou tout se trouve.
 
+def save_objectf(obj, filename):
+    with open(filename, 'wb') as output:
+        pickle.dump(obj, output, -1)
 
 #------------ reading of training data-----------------
 #all pictures have to be in the same folder. 
@@ -157,9 +161,14 @@ dictionnary = num_desc(trainingset)
 
 
 KMTree = recursive_Tree(trainingset, 2, 0, dictionnary)
-with open(PATH+"trained_tree.txt", 'w') as trained_tree:
-    trained_tree.write("Process terminated : done in--- %s seconds --- " %(time.time()-start_time) + "\n")
-    trained_tree.write(str(KMTree))
+# with open(PATH+"trained_tree.txt", 'w') as trained_tree:
+#     trained_tree.write("Process terminated : done in--- %s seconds --- " %(time.time()-start_time) + "\n")
+#     trained_tree.write(str(KMTree))
+
+with open('trained_tree.pkl', 'wb') as output:
+    pickle.dump(KMTree, output, -1)
+
+del KMTree
 
 print("Process terminated : done in--- %s seconds --- " %(time.time()-start_time))
 

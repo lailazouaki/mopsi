@@ -4,14 +4,11 @@ from os import listdir
 from os.path import isfile, join
 import sys
 import featureMatching
+import cPickle as pickle
 
-img = cv2.imread(sys.argv[1])
-gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
-surf = cv2.xfeatures2d.SURF_create()
-(kps, descs) = surf.detectAndCompute(gray, None)
+with open('trained_tree.pkl', 'rb') as input_tree:
+	KMTree = pickle.load(input_tree)
 
-for vector in descs:
-
-print(len(kps))
-print(len(descs))
+# print(KMTree)
+print(KMTree[0][1][1][1]['/Users/lailazouaki/Documents/MOPSI/images/image_all/tour_eiffel_2.jpg'])
