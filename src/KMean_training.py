@@ -2,6 +2,8 @@ import cv2
 import os
 import numpy as np
 
+PATH = "/Users/lailazouaki/Documents/MOPSI/"
+
 #in the following code, K is the branch factor of the vocabulaty tree.
 #                       mu is the list of centers for a given cluster of points (divided in K region, hence K centers)
 #                       X generally refers to a cluster. A cluster isn't solely made of points, it is made of short list containing. [keypoint,descriptor(which is a vector), img id]
@@ -136,7 +138,7 @@ def recursive_Tree (X, K, depth, dic, L=2):
 #------------ reading of training data-----------------
 #all pictures have to be in the same folder. 
 
-direction = "/Users/Thomartin/mopsi/images/tour_eiffel"
+direction = PATH+"images/image_all"
 surf = cv2.xfeatures2d.SURF_create()
 trainingset = []
 for file in os.listdir(direction):
@@ -157,7 +159,7 @@ dictionnary = num_desc(trainingset)
 #print(set_mass(trainingset, dictionnary))
 
 KMTree = recursive_Tree(trainingset, 2, 0, dictionnary)
-
+with open(PATH+"results", )
 print(KMTree)
 
 
