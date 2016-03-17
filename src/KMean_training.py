@@ -4,7 +4,7 @@ import numpy as np
 import time
 import cPickle as pickle
 
-PATH = "/Users/lailazouaki/Documents/MOPSI/"
+PATH = "/Users/Thomartin/mopsi/"
 
 #in the following code, K is the branch factor of the vocabulaty tree.
 #                       mu is the list of centers for a given cluster of points (divided in K region, hence K centers)
@@ -120,7 +120,7 @@ def set_mass(X, dic):
 
 
 #----------- creates the KDTree, including vectors and masses
-def recursive_Tree (X, K, depth, dic, L=2):
+def recursive_Tree (X, K, depth, dic, L=3):
     Tree = []
     (mu, clusters) = find_centers(X, K)
     if (depth <= L-2):
@@ -160,7 +160,7 @@ dictionnary = num_desc(trainingset)
 # trainingset is a very large set of lists containing the keypoint, the descriptor and the associated image.
 
 
-KMTree = recursive_Tree(trainingset, 2, 0, dictionnary)
+KMTree = recursive_Tree(trainingset, 4, 0, dictionnary)
 # with open(PATH+"trained_tree.txt", 'w') as trained_tree:
 #     trained_tree.write("Process terminated : done in--- %s seconds --- " %(time.time()-start_time) + "\n")
 #     trained_tree.write(str(KMTree))
