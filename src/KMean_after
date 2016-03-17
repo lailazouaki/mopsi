@@ -136,6 +136,16 @@ def set_mass(X, descriptor_count_dictionary):
 
     return masses
 
+def scoring(cluster, descriptor_count_dictionary):
+
+    scores = {}
+    for point in cluster:
+        img_id = point[2]
+        if img_id in scores.keys():
+            scores[img_id] += (float(1)/descriptor_count_dictionary[img_id])
+        else:
+            scores[img_id] = (float(1)/descriptor_count_dictionary[img_id])
+
 # A noter que le float(1) est la pour forcer une division reelle, sinon j'obtients toujours 0.
 
 
@@ -152,7 +162,7 @@ def recursive_tree (X, K, current_depth, descriptor_count_dictionary, max_depth=
         return tree
     else:
         for i in range(0, len(cluster_centers)):
-            masses=set_mass(clusters[i], descriptor_count_dictionary)
+            masses=scoring(clusters[i], descriptor_count_dictionary)
             tree.append([cluster_centers[i], masses])
         return tree
 # En procedant ainsi, on garde en memoire dans tree: la hierarchie de l'arbre, les vecteurs aux nodes et les ensembles. 

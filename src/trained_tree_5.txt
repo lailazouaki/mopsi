@@ -1,0 +1,5 @@
+trained_tree_5
+Process terminated : done in--- 21625.1655831 seconds --- 
+K = 6
+L = 10
+Mode = large

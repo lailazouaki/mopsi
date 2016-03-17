@@ -1,0 +1,5 @@
+trained_tree_1
+Process terminated : done in--- 104.86015296 seconds --- 
+K = 2
+L = 2
+Mode = small
